@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 import 'package:clima/services/weather.dart';
+import 'city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
   final dynamic weatherData;
@@ -17,12 +18,23 @@ class _LocationScreenState extends State<LocationScreen> {
   int condition;
   String weatherIcon;
   String weatherMessage;
+  WeatherModel weatherService = WeatherModel();
 
   void updateUI(dynamic weatherData) {
     setState(() {
+      if (weatherData == null) {
+        temperature = 0;
+
+        weatherIcon = weatherService.getWeatherIcon(temperature);
+        weatherMessage = 'Failed to get weather data';
+
+        cityName = 'Error';
+        condition = 999;
+        return;
+      }
+
       double temp = widget.weatherData['main']['temp'];
       temperature = temp.toInt();
-      WeatherModel weatherService = WeatherModel();
 
       weatherIcon = weatherService.getWeatherIcon(temperature);
       weatherMessage = weatherService.getMessage(temperature);
@@ -60,14 +72,22 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      var weatherData = weatherService.getLocationData();
+                      updateUI(weatherData);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return CityScreen();
+                      }));
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
