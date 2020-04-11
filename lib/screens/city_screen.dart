@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
+import 'package:clima/services/weather.dart';
+import 'location_screen.dart';
 
 class CityScreen extends StatefulWidget {
   @override
@@ -7,6 +9,7 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
+  String cityInput;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +44,16 @@ class _CityScreenState extends State<CityScreen> {
                   ),
                   decoration: kTextInputDecurationStyle,
                   onChanged: (text) {
-                    print(text);
+                    setState(() {
+                      cityInput = text;
+                    });
                   },
                 ),
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context, cityInput);
+                },
                 child: Text(
                   'Get Weather',
                   style: kButtonTextStyle,
